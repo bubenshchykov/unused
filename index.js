@@ -7,8 +7,8 @@ var pjsonPath = path.join(__dirname, 'package.json');
 var pjson = require(pjsonPath);
 
 var sources = {
-	include: ["."],
-	exclude: ["node_modules"]
+	include: [""],
+	exclude: ["node_modules", ".git"]
 };
 
 var contents = "";
@@ -17,22 +17,22 @@ sources.include.forEach(function(dir){
 	mergeDirSources(absPath);
 });
 
-var found = false;
-console.log('detecting unused modules.. ');
-for(dep in pjson.dependencies) {
-	var pattern = 'require( *)\((.*)'+ dep + '\)(.*)';
+console.log('detecting unused dependencies.. ');
+for(module in pjson.dependencies) {
+	detect(module);
+}
+console.log('detecting unused devDependencies.. ');
+for(module in pjson.devDependencies) {
+	detect(module);
+}
+
+function detect(module) {
+	var pattern = 'require( *)\((.*)'+ module + '\)(.*)';
 	var reg = new RegExp(pattern, 'm');
 	if (!reg.test(contents)) {
-		found = true;
-		console.log(dep);
+		console.log(module);
 	}
 }
-
-if (!found) {
-	console.log('each module is used, good job bro!');
-}
-
-
 
 function mergeDirSources(dir) {
 	var entries = fs.readdirSync(dir);
@@ -47,7 +47,6 @@ function mergeDirSources(dir) {
 		}
 	});
 }
-
 
 function isExcluded(abspath){
 	var excluded = sources.exclude.map(function(ex){
