@@ -14,12 +14,5 @@
   "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/bubenshchykov/unused/issues"
-  },
-  "dependencies": {
-    "express": "",
-    "bub": ""
-  },
-  "devDependencies": {
-    "grunt": ""
   }
 }
